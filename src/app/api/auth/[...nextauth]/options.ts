@@ -41,16 +41,17 @@ export const authOptions = {
 
           if (!user) {
             console.error("No user found with this email");
+            throw new Error("No user found with this email");
             return null;
 
-            // throw new Error("No user found with this email");
           }
 
           if (!user.isVerified) {
             console.log("Please verify your account before login");
+            
+            throw new Error("Please verify your account before login");
             return null;
 
-            // throw new Error("Please verify your account before login");
           }
 
           const isPasswordOk = await bcrypt.compare(
@@ -61,14 +62,14 @@ export const authOptions = {
             return user;
           } else {
             console.log("Incorrect Password");
+            throw new Error("Incorrect Password");
 
             return null;
-            throw new Error("Incorrect Password");
           }
         } catch (error: any) {
           console.log(error);
-          return null;
           throw new Error(error);
+          return null;
         }
         return null;
       },
@@ -94,11 +95,11 @@ export const authOptions = {
       console.log("Profile", profile);
       console.log("User", user);
 
-      const newToken: token = token as token
+      const newToken: token = token as token;
 
       if (user) {
         token._id = user._id?.toString();
-        token.isVerified = user.isVerified ;
+        token.isVerified = user.isVerified;
         token.isAcceptingMessages = user.isAcceptingMessages;
         token.username = user.username;
       }
@@ -106,4 +107,9 @@ export const authOptions = {
       return newToken;
     },
   },
+  // pages: {
+  //   signIn: "/sign-in",
+  // },
 } satisfies NextAuthOptions;
+
+//!By throwing specific errors in the authorize function and catching them in the client-side signIn function, you can display custom error messages to the user.

@@ -25,6 +25,13 @@ export async function POST(request: Request) {
 
     const existingUserByEmail = await UserModel.findOne({ email });
 
+    // if (existingUserByEmail) {
+    //   return Response.json(
+    //     { success: false, message: "User is already exist with this email" },
+    //     { status: 400 }
+    //   );
+    // }
+
     const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
 
     if (existingUserByEmail) {
@@ -90,7 +97,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         success: false,
-        message: "Error registering user",
+        message: "Error registering user || Username/email already exists",
       },
       {
         status: 500,

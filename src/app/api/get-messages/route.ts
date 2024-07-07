@@ -11,6 +11,8 @@ export async function GET(request: NextRequest) {
 
   const session = await getServerSession(authOptions);
   const user: User = session?.user as User; //? Assertion
+  console.log(user);
+  
 
   if (!session || !session.user) {
     return Response.json(
@@ -23,28 +25,36 @@ export async function GET(request: NextRequest) {
   }
 
   const userId = new mongoose.Types.ObjectId(user._id);
+  console.log("userId || get-messages-route" , userId);
+  
   try {
-    const user = await UserModel.aggregate([
-      { $match: { id: userId } },
+    const userMessages = await UserModel.aggregate([
+      { $match: { _id: userId } },
       { $unwind: "$messages" },
       { $sort: { "messages.createdAt": -1 } },
       { $group: { _id: "$_id", messages: { $push: "$messages" } } },
     ]);
 
-    if (!user || user.length === 0) {
+    console.log("User-aggregate-get-messages" , userMessages);
+
+    console.log(userMessages);
+    
+    
+
+    if (!userMessages || userMessages.length === 0) {
       return Response.json(
         {
           success: false,
-          message: "User not found",
+          message: "No messages yet",
         },
-        { status: 401 }
+        { status: 400 }
       );
     }
 
     return Response.json(
       {
         success: true,
-        message: user[0].messages,
+        message: userMessages[0].messages,
       },
       { status: 200 }
     );

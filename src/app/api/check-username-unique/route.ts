@@ -12,9 +12,8 @@ export async function GET(req: NextRequest) {
   await dbConnect();
 
   try {
-    
-    // console.log(req.nextUrl); 
-    
+    // console.log(req.nextUrl);
+
     const { searchParams } = req.nextUrl;
     const queryParam = {
       username: searchParams.get("username"),
@@ -27,7 +26,8 @@ export async function GET(req: NextRequest) {
 
     if (!success) {
       const usernameErrors = error.format().username?._errors || [];
-      console.log("usernameErrors :", usernameErrors); //? Array of strings
+      // console.log("usernameErrors :", usernameErrors);
+      //? Array of strings
 
       return Response.json(
         {
